@@ -69,7 +69,6 @@ class MAVLinkIMUAdapter():
 
     def __init__(self, serial_path, serial_baud, att_callback, loc_callback):
 
-        #self.sink = None
         imu_link = mavutil.mavlink_connection(serial_path, serial_baud)
 
         self.att_callback = att_callback
@@ -88,9 +87,6 @@ class MAVLinkIMUAdapter():
                     self.loc_callback(Location(lat, lon, alt))
 
         threading.Thread(target=mavlink_listener, name="MAVLink", daemon=True).start()
-
-    #def set_sink(self, sink):
-    #    self.sink = sink
 
 class GimbalCamera():
     """Abstraction of a camera on a gimbal."""
