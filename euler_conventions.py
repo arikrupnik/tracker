@@ -11,7 +11,7 @@ class RPY():
            and yaw angles, in degrees; with a single argument, treat
            it as a complete rotation matrix."""
         if r is None:
-            self.r = R.from_euler("zyx", (yaw, pitch, roll), degrees=True)
+            self.r = R.from_euler("zyx", (yaw, pitch, roll), degrees=True)  # this moves camera correctly when when target yaw aligns with base yaw. Whith platform yaw 90 degrees away from target yaw, camera tilts in response to paltform pitch and ignores roll (should ignore pitch and respond to roll)
             #self.r = R.from_euler("xyz", (roll, pitch, yaw), degrees=True)  # this moves the camera correctly but tests fail
         else:
             self.r = r
