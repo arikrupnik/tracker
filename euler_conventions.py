@@ -78,12 +78,12 @@ def test_composition():
     att = RPY(0, 0, 90)
     assert str(compose(att, pt)) == "a:  90.0 e: 20.0"
 
-    # yawing the base right and rolling it left adds base roll to turret tilt
-    att = RPY(0, -30, 90)
-    # I expect "a:  90.0 e: 50.0", but get this:
-    assert str(compose(att, pt)) == "a:  79.7 e: 17.2"
+    # yawing the base right and rolling it left decreases azimuth and elevation
+    att = RPY(-30, 0, 90)
+    # I expect "a: less_than(90.0) e: less_than(20.0)", but get this:
+    assert str(compose(att, pt)) == "a:  90.0 e:-10.0"
 
-    # yawing the base right and pitching it up adds base pitch to turret tilt
+    # yawing the base right and pitching it up adds turret tilt to base pitch
     att = RPY(0, 30, 90)
     # I expect "a:  90.0 e: 50.0", but get this:
     assert str(compose(att, pt)) == "a: 100.3 e: 17.2"
@@ -104,12 +104,13 @@ def test_inv_composition():
     att = RPY(0, 0, 90)
     assert str(compose(att, azel)) == "p: -90.0 t: 20.0"
 
-    # yawing the base right and rollig it left subtracts base roll from necessary tilt
-    att = RPY(0, 30, 90)
-    # I expect "p: -90.0 t:-10.0", but get this:
-    assert str(compose(att, azel)) == "p: -79.7 t: 17.2"
-
-    # yawing the base right and pitching it up requires unyawing, but turret pitch is orthogonal to base pitch and remains 20
+    # yawing the base right and rollig it right subtracts base roll from target elevation
     att = RPY(30, 0, 90)
-    # I expect "p: -90.0 t: 20.0", but get this:
     assert str(compose(att, azel)) == "p: -90.0 t:-10.0"
+
+    # yawing the base right and pitching it up requires unyawing, but
+    # less than 90 degrees, and tilt less than 20; as pitch increases
+    # past 45 degrees, pan becomes responsible for elevation and tilt
+    # for azimuth
+    att = RPY(0, 30, 90)
+    assert str(compose(att, azel)) == "p: -79.7 t: 17.2"
