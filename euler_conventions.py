@@ -35,10 +35,10 @@ class AzEl():
        to North and horizon."""
     def __init__(self, azimuth=None, elevation=None, *, r=None):
         if r is None:
-            self.r = R.from_euler("zyx", (azimuth, elevation, 0), degrees=True)
+            self.r = R.from_euler("ZYX", (azimuth, elevation, 0), degrees=True)
         else:
             self.r = r
-        self.azimuth, self.elevation, _ = self.r.as_euler("zyx", degrees=True)
+        self.azimuth, self.elevation, _ = self.r.as_euler("ZYX", degrees=True)
     def __str__(self):
         return f"a:{self.azimuth:6.1f} e:{self.elevation:5.1f}"
 def test_AzEl():
@@ -63,11 +63,11 @@ def test_PT():
     assert str(PT(-120, -30)) == "p:-120.0 t:-30.0"
 
 def test_composition():
-    # find azimuth/elevation of camera from base attitude and pan/tilt
-    # of turret
+    # find azimuth/elevation of camera from base attitude and pan/tilt of
+    # turret
 
     def compose(base_att, turret_pt):
-        return AzEl(r=(pt.r * att.r))
+        return AzEl(r=(base_att.r * turret_pt.r))
 
     # simple addition on one axis
     att = RPY(0, 30, 0)
@@ -78,15 +78,13 @@ def test_composition():
     att = RPY(0, 0, 90)
     assert str(compose(att, pt)) == "a:  90.0 e: 20.0"
 
-    # yawing the base right and rolling it left decreases azimuth and elevation
-    att = RPY(-30, 0, 90)
-    # I expect "a: less_than(90.0) e: less_than(20.0)", but get this:
-    assert str(compose(att, pt)) == "a:  90.0 e:-10.0"
-
     # yawing the base right and pitching it up adds turret tilt to base pitch
     att = RPY(0, 30, 90)
-    # I expect "a:  90.0 e: 50.0", but get this:
-    assert str(compose(att, pt)) == "a: 100.3 e: 17.2"
+    assert str(compose(att, pt)) == "a:  90.0 e: 50.0"
+
+    # yawing the base right and rolling it left decreases azimuth and elevation
+    att = RPY(-30, 0, 90)
+    assert str(compose(att, pt)) == "a:  79.7 e: 17.2"
 
 def test_inv_composition():
     # find necessary pan/tilt for turret from base attitude and target
@@ -104,7 +102,8 @@ def test_inv_composition():
     att = RPY(0, 0, 90)
     assert str(compose(att, azel)) == "p: -90.0 t: 20.0"
 
-    # yawing the base right and rollig it right subtracts base roll from target elevation
+    # yawing the base right and rollig it right subtracts base roll from target
+    # elevation
     att = RPY(30, 0, 90)
     assert str(compose(att, azel)) == "p: -90.0 t:-10.0"
 
