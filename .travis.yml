@@ -2,7 +2,7 @@ language: python
 python:
   - "3.6"
 
-install: "pip3 install numpy scipy pymavlink pymap3d"
+install: "pip3 install numpy scipy pymavlink pymap3d pyserial"
 
 script:
   - pytest *.py
