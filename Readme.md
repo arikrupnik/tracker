@@ -11,5 +11,5 @@ The basic setup is:
   * telemetry receiver on the ground
   * UAV that transmits its location in telemetry
 
-Initial implementation uses serial-port VISCA cameras and ArduPilot for local and telemetry IMUs.
+Initial implementation uses serial-port VISCA cameras and MAVLink for local and telemetry IMUs.
 I expect to add additional backends as this program gains users.
